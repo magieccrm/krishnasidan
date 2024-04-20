@@ -5,7 +5,7 @@ import DataTable from "react-data-table-component";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { useDispatch, useSelector } from "react-redux";
-import {getAllAgent, getAllAgentWithData} from "../../features/agentSlice";
+import { getAllAgent, getAllAgentWithData } from "../../features/agentSlice";
 import { getAllStatus } from "../../features/statusSlice";
 import { toast } from "react-toastify";
 // import ReactHTMLTableToExcel from 'react-html-table-to-excel'; // Import the library
@@ -17,23 +17,22 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
   const [search, setsearch] = useState("");
   const [filterleads, setfilterleads] = useState([]);
   const [selectedRowIds, setSelectedRowIds] = useState([]);
-  const { agent } = useSelector((state) => state.agent); 
+  const { agent } = useSelector((state) => state.agent);
   const { Statusdata } = useSelector((state) => state.StatusData);
   const apiUrl = process.env.REACT_APP_API_URL;
   const DBuUrl = process.env.REACT_APP_DB_URL;
-  console.log('status',status)
+  console.log('status', status)
   useEffect(() => {
     const fetchData = async () => {
       try {
         await new Promise(resolve => setTimeout(resolve, 1000));
-       // dispatch(getAllAgent());
+        // dispatch(getAllAgent());
         dispatch(getAllStatus());
 
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-
     fetchData();
   }, []);
   const getAllLead1 = async () => {
@@ -90,7 +89,7 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
   };
   /////// For Team Leader
   const getAllLead3 = async (assign_to_agent) => {
-    try { 
+    try {
       const responce = await axios.post(
         `${apiUrl}/getLeadbyTeamLeaderidandwithstatus`,
         {
@@ -98,12 +97,12 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
         },
       );
       setstatus(responce?.data?.success);
-      if (responce?.data?.success === true) {   
+      if (responce?.data?.success === true) {
         setleads(responce?.data?.lead);
-      setfilterleads(responce?.data?.lead);
-      return (responce?.data?.message);
+        setfilterleads(responce?.data?.lead);
+        return (responce?.data?.message);
       }
-      
+
     } catch (error) {
       const message = await error?.response?.data?.message;
       if (message == 'Client must be connected before running operations') {
@@ -117,17 +116,17 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
   useEffect(() => {
     if (localStorage.getItem("role") === "admin") {
       getAllLead1();
-      dispatch(getAllAgent()); 
+      dispatch(getAllAgent());
     }
     if (localStorage.getItem("role") === "TeamLeader") {
       getAllLead3(localStorage.getItem("user_id"));
-        dispatch(getAllAgentWithData({assign_to_agent:localStorage.getItem("user_id")}));
-      } 
+      dispatch(getAllAgentWithData({ assign_to_agent: localStorage.getItem("user_id") }));
+    }
     else {
       getAllLead2(localStorage.getItem("user_id"));
-      dispatch(getAllAgent({assign_to_agent:localStorage.getItem("user_id")}));
+      dispatch(getAllAgent({ assign_to_agent: localStorage.getItem("user_id") }));
     }
-  }, [localStorage.getItem("user_id"), apiUrl, DBuUrl,localStorage.getItem("role")]);
+  }, [localStorage.getItem("user_id"), apiUrl, DBuUrl, localStorage.getItem("role")]);
 
   // useEffect(() => {
   //   const result = leads.filter((lead) => {
@@ -152,7 +151,7 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
 
   useEffect(() => {
     const result = leads.filter((lead) => {
-      return (  
+      return (
         (lead.full_name && lead.full_name.toLowerCase().includes(search.toLowerCase())) ||
         (lead.agent_details && lead.agent_details[0]?.agent_name && lead.agent_details[0].agent_name.toLowerCase().includes(search.toLowerCase())) ||
         (lead.service_details && lead.service_details[0]?.product_service_name && lead.service_details[0].product_service_name.toLowerCase().includes(search.toLowerCase())) ||
@@ -411,7 +410,7 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
 
   const AdvanceSerch = async (e) => {
     e.preventDefault();
-     const updatedata={...adSerch,user_id:localStorage.getItem("user_id"),role:localStorage.getItem("role")}
+    const updatedata = { ...adSerch, user_id: localStorage.getItem("user_id"), role: localStorage.getItem("role") }
     fetch(`${apiUrl}/getAdvanceFillter`, {
       method: "POST",
       headers: {
@@ -596,17 +595,17 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
         </table>
       ) : (
         <>
-         
+
 
           {
             isAdmin1 ? (<><button className="btn btn-sm shadow_btn btn-success" onClick={exportToPDF}>Export PDF</button>
-            <button className="btn btn-sm shadow_btn btn-success" onClick={exportToExcel}>
-              Export Excel
-            </button>
-          <button className="btn shadow_btn btn-sm btn-danger" onClick={DeleteSelected}>
-            Delete
-          </button></>
-              ) : (<></>)
+              <button className="btn btn-sm shadow_btn btn-success" onClick={exportToExcel}>
+                Export Excel
+              </button>
+              <button className="btn shadow_btn btn-sm btn-danger" onClick={DeleteSelected}>
+                Delete
+              </button></>
+            ) : (<></>)
           }
           <DataTable
             responsive
@@ -616,7 +615,8 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
             pagination
             fixedHeader
             fixedHeaderScrollHeight="550px"
-            selectableRows
+            // selectableRows
+            selectableRows="single"
             selectableRowsHighlight
             highlightOnHover
             subHeader
@@ -634,6 +634,7 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
             onSelectedRowsChange={handleSelectedRowsChange}
             striped
           />
+        
         </>
       )}
     </div>
