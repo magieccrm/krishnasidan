@@ -45,7 +45,7 @@ function Addlead() {
     const limitedValue = numericValue.slice(0, 10);
 
     // Update state with the sanitized value
-    setleaddata({
+    setleaddata({  
       ...leaddata,
       contact_no: limitedValue,
     });

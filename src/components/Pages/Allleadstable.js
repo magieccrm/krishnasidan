@@ -17,6 +17,8 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
   const [search, setsearch] = useState("");
   const [filterleads, setfilterleads] = useState([]);
   const [selectedRowIds, setSelectedRowIds] = useState([]);
+  const [selectedRowIds1, setSelectedRowIds1] = useState([]);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const { agent } = useSelector((state) => state.agent);
   const { Statusdata } = useSelector((state) => state.StatusData);
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -50,10 +52,6 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
       setfilterleads(responce?.data?.lead);
       return (responce?.data?.message);
     } catch (error) {
-      const message = await error?.response?.data?.message;
-      if (message == 'Client must be connected before running operations') {
-        getAllLead1();
-      }
       console.log(error);
       setfilterleads();
     }
@@ -165,7 +163,56 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
 
   const isAdmin = localStorage.getItem("role") === "admin" || localStorage.getItem("role") === "TeamLeader";
   const isAdmin1 = localStorage.getItem("role") === "admin";
+
+  const handleCheckAll = (e) => {
+    e.preventDefault();
+    const currentPageIds = filterleads.map(row => row._id).slice(0, rowsPerPage);;
+    // console.log('currentPageIds',currentPageIds)
+    const allSelectedOnPage = currentPageIds.every(id => selectedRowIds1.includes(id));
+
+    if (allSelectedOnPage) {
+      // If all rows on the current page are selected, deselect them
+      setSelectedRowIds1(prevIds => prevIds.filter(id => !currentPageIds.includes(id)));
+    } else {
+      // If at least one row on the current page is not selected, select all rows on the current page
+      setSelectedRowIds1(prevIds => [...prevIds, ...currentPageIds.filter(id => !prevIds.includes(id))]);
+    }
+  };
+
+
+
+  const handleSingleCheck = (e, row) => {
+    const selectedId = e.target.value;
+    const isChecked = e.target.checked;
+
+    if (isChecked) {
+      setSelectedRowIds1(prevIds => [...prevIds, selectedId]);
+    } else {
+      setSelectedRowIds1(prevIds => prevIds.filter(id => id !== selectedId));
+    }
+  };
+
+
   const commonColumns = [
+    {
+      name: (
+        <a
+        type="button"
+        onClick={handleCheckAll}
+        className=""
+        >Check per page</a>
+      ),
+      cell: (row) => (
+        <input
+          type="checkbox"
+          defaultValue={row._id}
+          checked={selectedRowIds1.includes(row._id)} // ensure checkboxes reflect selection state
+          onChange={(e) => handleSingleCheck(e, row)}
+        />
+      ),
+      // sortable: true,
+    },
+
     {
       name: "Name",
       cell: (row) => (
@@ -362,10 +409,13 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
   };
 
   const handleSelectedRowsChange = ({ selectedRows }) => {
-    const selectedIds = selectedRows.map((row) => row._id);
+
+    let selectedIds = selectedRows.map((row) => row._id);
     setSelectedRowIds(selectedIds);
     sendDataToParent(selectedIds);
   };
+
+
   const [adSerch, setAdvanceSerch] = useState([]);
 
   const DeleteSelected = async () => {
@@ -475,7 +525,11 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
       window.location.reload(false);
     }, 500);
   };
-
+  const getrowperpage=async(e) =>{
+    const newValue = e.target.value;
+    setRowsPerPage(newValue)
+  }
+  
   return (
     <div>
       <div className="row " style={{ display: dataFromParent }}>
@@ -597,8 +651,21 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
         <>
 
 
-          {
-            isAdmin1 ? (<><button className="btn btn-sm shadow_btn btn-success" onClick={exportToPDF}>Export PDF</button>
+          {   
+          
+            isAdmin1 ? (<>
+            <span class="btn btn-sm shadow_btn">Rows per page:</span>
+            <select
+               className="btn btn-sm shadow_btn  "
+              value={rowsPerPage}
+              onChange={getrowperpage} 
+            >
+              <option value="10">10</option>
+            
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select><button className="btn btn-sm shadow_btn btn-success" onClick={exportToPDF}>Export PDF</button>
               <button className="btn btn-sm shadow_btn btn-success" onClick={exportToExcel}>
                 Export Excel
               </button>
@@ -607,34 +674,38 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
               </button></>
             ) : (<></>)
           }
+          <div> 
           <DataTable
-            responsive
-            id="table-to-export"
-            columns={columns}
-            data={filterleads}
-            pagination
-            fixedHeader
-            fixedHeaderScrollHeight="550px"
-            // selectableRows
-            selectableRows="single"
-            selectableRowsHighlight
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                value={search}
-                onChange={(e) => setsearch(e.target.value)}
-                className="form-control w-25 "
-              />
-            }
-            customStyles={customStyles}
-            selectedRows={selectedRowIds}
-            onSelectedRowsChange={handleSelectedRowsChange}
-            striped
-          />
-        
+  key={rowsPerPage} // Add key prop to force re-render when rowsPerPage changes
+  responsive
+  id="table-to-export"
+  columns={columns}
+  data={filterleads}
+  pagination
+  paginationPerPage={rowsPerPage}
+  fixedHeader
+  fixedHeaderScrollHeight="550px"
+  selectableRows="single"
+  highlightOnHover
+  subHeader
+  subHeaderComponent={
+    <input
+      type="text"
+      placeholder="Search here"
+      value={search}
+      onChange={(e) => setsearch(e.target.value)}
+      className="form-control w-25"
+    />
+  }
+  customStyles={customStyles}
+  selectedRows={selectedRowIds}
+  striped
+/>
+
+
+          </div>
+
+
         </>
       )}
     </div>

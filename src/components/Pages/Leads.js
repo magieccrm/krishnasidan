@@ -20,7 +20,7 @@ function Leads() {
   useEffect(() => {
     dispatch(getAllLead());
     
-    dispatch(getAllStatus());
+    dispatch(getAllStatus());   
   }, []);
   const BulkAction = async (e) => {
     e.preventDefault();
@@ -40,7 +40,7 @@ function Leads() {
         toast.warn(response.data.message);
       }
       if (response.data.success === true) {
-        window.location.reload(false);
+        // window.location.reload(false);
         toast.success(response.data.message);
 
       }
