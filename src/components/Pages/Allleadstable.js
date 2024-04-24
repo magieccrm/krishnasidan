@@ -212,8 +212,6 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
     } else {
      await setSelectedRowIds1(prevIds => prevIds.filter(id => id !== selectedId));
     }
-   
-    // console.log('Single page select',selectedRowIds1)
   };
  
   useEffect(() => {

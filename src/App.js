@@ -53,6 +53,7 @@ import NewLead from './components/Pages/NewLead';
 import UploadDataDetails from './components/Pages/UploadDataDetails';
 import Housingapi from './components/Pages/Housingapi';
 import ImpSchedule from './components/Pages/ImpSchedule';
+import BusinessWA from './components/Pages/BusinessWA';
   function App() { 
     const [isLoading, setIsLoading] = useState(true);
     const [isLogined, setIsLogined]= useState(false); 
@@ -143,6 +144,7 @@ import ImpSchedule from './components/Pages/ImpSchedule';
 
 
          <Route path="/UploadContent" element={<UploadData />}></Route>
+         <Route path="/BusinessWA" element={<BusinessWA />}></Route>
          <Route path="/UploadContent/:id" element={<UploadDataDetails />}></Route>
 
          <Route path="/buysms" element={<Buysms/>}></Route>
