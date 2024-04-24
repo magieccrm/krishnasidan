@@ -13,7 +13,7 @@ function BusinessWA() {
   const getUploadedData = async () => {
     try {
       const responce = await axios.get(
-        `${apiUrl}/ContactUplode`, {
+        `${apiUrl}/Businesswtspmessage`, {
         headers: {
           "Content-Type": "application/json",
           "mongodb-url": DBuUrl,
