@@ -20,7 +20,7 @@ function BusinessWA() {
         },
       }
       );
-      setuploaddata(responce?.data?.Document);
+      setuploaddata(responce?.data?.data);
     } catch (error) {
       console.log(error);
     }
