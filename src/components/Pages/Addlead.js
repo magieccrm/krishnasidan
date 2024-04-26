@@ -50,7 +50,7 @@ function Addlead() {
       contact_no: limitedValue,
     });
   };
-  const submitLead = async (e) => {
+  const submitLead = async (e) => { 
     e.preventDefault();
     const length = leaddata?.contact_no?.length;
     const length1 = leaddata?.alternative_no?.length;
@@ -85,6 +85,7 @@ function Addlead() {
         commented_id:localStorage.getItem("user_id"),
       };
       const aaaa = await dispatch(addlead(updatedLeadData));
+      console.log('aaaa',aaaa)
       if (aaaa.payload.success == true) {
         toast.success(aaaa.payload.message);
         if (buttonValue === "save") {
