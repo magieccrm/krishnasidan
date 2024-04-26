@@ -129,7 +129,7 @@ import BusinessWA from './components/Pages/BusinessWA';
           <Route path="*" element={<NotFound />} />
           <Route path="/call_log_details/:id" element={<CallLogDetails/>}></Route>  
           <Route path="/Addlead" element={<Addlead />}></Route>
-         <Route path="/Leads" element={<Leads />}></Route>
+          <Route path="/Leads" element={<Leads />}></Route>
 
          <Route path="/GroupSms" element={<GroupSms />}></Route>
 
