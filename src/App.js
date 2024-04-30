@@ -54,6 +54,7 @@ import UploadDataDetails from './components/Pages/UploadDataDetails';
 import Housingapi from './components/Pages/Housingapi';
 import ImpSchedule from './components/Pages/ImpSchedule';
 import BusinessWA from './components/Pages/BusinessWA';
+import Importedlead from './components/Pages/Importedlead';
   function App() { 
     const [isLoading, setIsLoading] = useState(true);
     const [isLogined, setIsLogined]= useState(false); 
@@ -150,6 +151,7 @@ const handleContextMenu = (e) => {
           <Route path="/call_log_details/:id" element={<CallLogDetails/>}></Route>  
           <Route path="/Addlead" element={<Addlead />}></Route>
           <Route path="/Leads" element={<Leads />}></Route>
+          <Route path="/importedlead" element={<Importedlead />}></Route>
 
          <Route path="/GroupSms" element={<GroupSms />}></Route>
 
