@@ -73,8 +73,28 @@ import BusinessWA from './components/Pages/BusinessWA';
            setIsLoading(false);  
         }
       };
-   
-      checkToken();
+    checkToken();
+
+
+    
+    //  for ctrl p block and also for right click
+     const handleKeyDown = (e) => {
+    if (e.ctrlKey && e.keyCode === 80) {
+      e.preventDefault();
+    }
+  };
+  document.addEventListener('keydown', handleKeyDown);
+const handleContextMenu = (e) => {
+    e.preventDefault(); 
+  };
+  // document.addEventListener('contextmenu', handleContextMenu);
+  return () => {
+    document.removeEventListener('keydown', handleKeyDown);
+    // document.removeEventListener('contextmenu', handleContextMenu);
+  };
+   // for ctrl p block and also for right click
+
+
     }, []);
         if (!isLogined) {   
       return (           
